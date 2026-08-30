@@ -1,0 +1,886 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TickTick Menu Bar — design mockup &amp; plan</title>
+<style>
+/* ---------- Catppuccin palettes as token sets ---------- */
+/* Page chrome is theme-aware: Latte by default, Mocha when dark.       */
+/* App mockups pin a palette with .mocha / .latte scope classes so they */
+/* stay authentic regardless of the doc's theme.                        */
+
+:root {
+  --base: #eff1f5;
+  --mantle: #e6e9ef;
+  --crust: #dce0e8;
+  --surface0: #ccd0da;
+  --surface1: #bcc0cc;
+  --surface2: #acb0be;
+  --text: #4c4f69;
+  --subtext1: #5c5f77;
+  --subtext0: #6c6f85;
+  --overlay1: #8c8fa1;
+  --overlay0: #9ca0b0;
+  --blue: #1e66f5;
+  --green: #40a02b;
+  --red: #d20f39;
+  --yellow: #df8e1d;
+  --mauve: #8839ef;
+  --lavender: #7287fd;
+  --peach: #fe640b;
+  --shadow: 0 1px 2px rgba(140,143,161,.25), 0 12px 32px -8px rgba(140,143,161,.35);
+  --hairline: rgba(76,79,105,.14);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --base: #1e1e2e;
+    --mantle: #181825;
+    --crust: #11111b;
+    --surface0: #313244;
+    --surface1: #45475a;
+    --surface2: #585b70;
+    --text: #cdd6f4;
+    --subtext1: #bac2de;
+    --subtext0: #a6adc8;
+    --overlay1: #7f849c;
+    --overlay0: #6c7086;
+    --blue: #89b4fa;
+    --green: #a6e3a1;
+    --red: #f38ba8;
+    --yellow: #f9e2af;
+    --mauve: #cba6f7;
+    --lavender: #b4befe;
+    --peach: #fab387;
+    --shadow: 0 1px 2px rgba(0,0,0,.5), 0 16px 40px -8px rgba(0,0,0,.6);
+    --hairline: rgba(205,214,244,.12);
+  }
+}
+:root[data-theme="dark"] {
+  --base: #1e1e2e;
+  --mantle: #181825;
+  --crust: #11111b;
+  --surface0: #313244;
+  --surface1: #45475a;
+  --surface2: #585b70;
+  --text: #cdd6f4;
+  --subtext1: #bac2de;
+  --subtext0: #a6adc8;
+  --overlay1: #7f849c;
+  --overlay0: #6c7086;
+  --blue: #89b4fa;
+  --green: #a6e3a1;
+  --red: #f38ba8;
+  --yellow: #f9e2af;
+  --mauve: #cba6f7;
+  --lavender: #b4befe;
+  --peach: #fab387;
+  --shadow: 0 1px 2px rgba(0,0,0,.5), 0 16px 40px -8px rgba(0,0,0,.6);
+  --hairline: rgba(205,214,244,.12);
+}
+
+/* Pinned scopes for the mockups themselves */
+.mocha {
+  --base: #1e1e2e; --mantle: #181825; --crust: #11111b;
+  --surface0: #313244; --surface1: #45475a; --surface2: #585b70;
+  --text: #cdd6f4; --subtext1: #bac2de; --subtext0: #a6adc8;
+  --overlay1: #7f849c; --overlay0: #6c7086;
+  --blue: #89b4fa; --green: #a6e3a1; --red: #f38ba8; --yellow: #f9e2af;
+  --mauve: #cba6f7; --lavender: #b4befe; --peach: #fab387;
+  --hairline: rgba(205,214,244,.1);
+}
+.latte {
+  --base: #eff1f5; --mantle: #e6e9ef; --crust: #dce0e8;
+  --surface0: #ccd0da; --surface1: #bcc0cc; --surface2: #acb0be;
+  --text: #4c4f69; --subtext1: #5c5f77; --subtext0: #6c6f85;
+  --overlay1: #8c8fa1; --overlay0: #9ca0b0;
+  --blue: #1e66f5; --green: #40a02b; --red: #d20f39; --yellow: #df8e1d;
+  --mauve: #8839ef; --lavender: #7287fd; --peach: #fe640b;
+  --hairline: rgba(76,79,105,.16);
+}
+
+/* ---------- Page ---------- */
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--base);
+  color: var(--text);
+  font: 15px/1.6 -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, "Segoe UI", sans-serif;
+  transition: background .25s ease, color .25s ease;
+}
+.wrap { max-width: 1040px; margin: 0 auto; padding: 0 24px 96px; }
+
+header.page { padding: 64px 0 40px; }
+.eyebrow {
+  font-size: 11.5px; font-weight: 600; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--mauve); margin: 0 0 10px;
+}
+h1 {
+  font-size: 34px; line-height: 1.15; letter-spacing: -.022em;
+  font-weight: 700; margin: 0 0 12px; text-wrap: balance;
+}
+.lede { color: var(--subtext0); font-size: 16.5px; max-width: 58ch; margin: 0; }
+
+section { margin-top: 56px; }
+h2 {
+  font-size: 13px; font-weight: 650; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--overlay1); margin: 0 0 6px;
+}
+.sec-note { color: var(--subtext0); font-size: 14px; margin: 0 0 20px; max-width: 70ch; }
+
+/* ---------- macOS context (menu bar + desktop) ---------- */
+.screen {
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--hairline);
+  background:
+    radial-gradient(1200px 500px at 20% -10%, color-mix(in srgb, var(--mauve) 16%, var(--mantle)), transparent 60%),
+    radial-gradient(900px 420px at 85% 0%, color-mix(in srgb, var(--blue) 12%, var(--mantle)), transparent 55%),
+    var(--mantle);
+  padding-bottom: 56px;
+}
+.menubar {
+  height: 27px;
+  display: flex; align-items: center; gap: 4px;
+  padding: 0 12px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--subtext1);
+  background: color-mix(in srgb, var(--crust) 72%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--hairline);
+  -webkit-font-smoothing: antialiased;
+}
+.menubar .spacer { flex: 1; }
+.menubar .item { padding: 2px 8px; border-radius: 5px; }
+.menubar .item.active {
+  background: var(--blue);
+  color: var(--crust);
+  font-weight: 600;
+}
+.menubar .item:focus-visible { outline: 2px solid var(--blue); outline-offset: 1px; }
+
+/* ---------- Popover ---------- */
+.pop-col { display: flex; justify-content: center; padding-top: 22px; }
+.popover {
+  width: 356px;
+  background: color-mix(in srgb, var(--base) 88%, transparent);
+  backdrop-filter: blur(18px);
+  border: 1px solid var(--hairline);
+  border-radius: 12px;
+  box-shadow: 0 24px 60px -12px rgba(0,0,0,.55), 0 2px 8px rgba(0,0,0,.3);
+  overflow: hidden;
+  position: relative;
+  font-size: 13px;
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+.popover::before { /* pointer arrow to the menubar icon */
+  content: "";
+  position: absolute; top: -5.5px; left: 50%; transform: translateX(-50%) rotate(45deg);
+  width: 11px; height: 11px;
+  background: inherit;
+  border-top-left-radius: 3px;
+  border-top: 1px solid var(--hairline);
+  border-left: 1px solid var(--hairline);
+  background: color-mix(in srgb, var(--base) 88%, transparent);
+}
+
+.pop-head {
+  display: flex; align-items: baseline; justify-content: space-between;
+  padding: 13px 16px 10px;
+}
+.pop-title { font-size: 14.5px; font-weight: 700; letter-spacing: -.01em; }
+.pop-count {
+  font-size: 11.5px; font-weight: 600; color: var(--subtext0);
+  font-variant-numeric: tabular-nums;
+  background: var(--surface0);
+  padding: 2px 8px; border-radius: 99px;
+}
+
+/* Segmented control */
+.seg {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 2px;
+  margin: 0 16px 10px;
+  background: var(--crust);
+  border-radius: 8px;
+  padding: 2px;
+}
+.seg button {
+  appearance: none; border: 0; cursor: pointer;
+  font: 600 12px/1 inherit; font-family: inherit;
+  color: var(--subtext0);
+  background: transparent;
+  padding: 6px 0;
+  border-radius: 6px;
+  transition: color .15s ease, background .15s ease;
+}
+.seg button[aria-selected="true"] {
+  background: var(--surface1);
+  color: var(--text);
+  box-shadow: 0 1px 2px rgba(0,0,0,.25);
+}
+.seg button:focus-visible { outline: 2px solid var(--blue); outline-offset: 1px; }
+
+/* Task list */
+.group-label {
+  font-size: 10.5px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--overlay0);
+  padding: 8px 16px 4px;
+}
+.task {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 12px 8px 10px;
+  border-radius: 8px;
+  margin: 0 6px;
+  position: relative;
+}
+.task:hover { background: var(--surface0); }
+.task .chk {
+  flex: none;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  border: 1.5px solid var(--overlay0);
+  display: grid; place-items: center;
+  cursor: pointer;
+  padding: 0;
+  background: transparent;
+  transition: border-color .15s ease, background .15s ease;
+}
+.task .chk:hover { border-color: var(--green); }
+.task .chk svg { opacity: 0; width: 11px; height: 11px; }
+.task.done .chk { background: var(--green); border-color: var(--green); }
+.task.done .chk svg { opacity: 1; }
+.task .body { flex: 1; min-width: 0; }
+.task .title {
+  font-weight: 500;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.task.done .title { color: var(--overlay0); text-decoration: line-through; }
+.task .meta {
+  display: flex; gap: 8px; align-items: center;
+  font-size: 11px; color: var(--subtext0);
+  margin-top: 1px;
+}
+.task .meta .proj::before { content: "# "; color: var(--overlay0); }
+.task .meta .overdue { color: var(--red); font-weight: 600; }
+.task .meta .when { font-variant-numeric: tabular-nums; }
+.prio { flex: none; width: 7px; height: 7px; border-radius: 50%; }
+.prio.hi { background: var(--red); }
+.prio.md { background: var(--yellow); }
+.prio.lo { background: var(--blue); }
+.prio.none { background: var(--surface2); }
+.task .del {
+  appearance: none; border: 0; cursor: pointer;
+  background: transparent; color: var(--overlay0);
+  border-radius: 6px; padding: 4px;
+  display: grid; place-items: center;
+  opacity: 0;
+  transition: opacity .12s ease, color .12s ease;
+}
+.task:hover .del, .task .del:focus-visible { opacity: 1; }
+.task .del:hover { color: var(--red); }
+.task .del:focus-visible { opacity: 1; outline: 2px solid var(--red); }
+.del svg { width: 13px; height: 13px; }
+
+.empty {
+  text-align: center;
+  color: var(--overlay0);
+  font-size: 12.5px;
+  padding: 18px 16px 22px;
+}
+.empty .big { font-size: 13.5px; font-weight: 600; color: var(--subtext0); display: block; margin-bottom: 2px; }
+
+/* Add field */
+.addfield {
+  display: flex; align-items: center; gap: 8px;
+  margin: 4px 6px 8px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: var(--crust);
+  border: 1px solid var(--hairline);
+  color: var(--overlay0);
+  font-size: 12.5px;
+}
+.addfield .plus { color: var(--blue); display: grid; place-items: center; }
+.addfield .hint {
+  margin-left: auto;
+  font-size: 10px; font-weight: 700; letter-spacing: .04em;
+  color: var(--overlay0);
+  border: 1px solid var(--hairline);
+  border-radius: 4px;
+  padding: 1px 5px;
+  background: var(--mantle);
+  font-variant-numeric: tabular-nums;
+}
+.addfield .type { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* Habit rows */
+.habit {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 12px 9px 10px;
+  margin: 0 6px;
+  border-radius: 8px;
+}
+.habit:hover { background: var(--surface0); }
+.habit .ring {
+  flex: none;
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  border: 2px solid var(--overlay0);
+  cursor: pointer;
+  padding: 0;
+  background: transparent;
+  display: grid; place-items: center;
+  transition: border-color .15s ease, background .15s ease, transform .1s ease;
+}
+.habit .ring:hover { border-color: var(--green); transform: scale(1.06); }
+.habit .ring svg { width: 13px; height: 13px; opacity: 0; color: var(--crust); }
+.habit.checked .ring { background: var(--green); border-color: var(--green); }
+.habit.checked .ring svg { opacity: 1; }
+.habit .h-body { flex: 1; min-width: 0; }
+.habit .h-name { font-weight: 550; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.habit.checked .h-name { color: var(--overlay0); }
+.habit .h-sub { font-size: 11px; color: var(--subtext0); margin-top: 1px; }
+.habit .streak {
+  font-size: 11.5px; font-weight: 650;
+  color: var(--peach);
+  font-variant-numeric: tabular-nums;
+  display: flex; align-items: center; gap: 3px;
+}
+.streak svg { width: 11px; height: 11px; }
+
+/* Calendar */
+.cal { padding: 4px 14px 12px; }
+.cal-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 4px 4px 8px;
+}
+.cal-month { font-size: 12.5px; font-weight: 700; letter-spacing: -.01em; }
+.cal-nav {
+  display: flex; gap: 2px;
+}
+.cal-nav button {
+  appearance: none; cursor: pointer;
+  width: 22px; height: 22px;
+  border-radius: 6px;
+  border: 1px solid var(--hairline);
+  background: var(--surface0);
+  color: var(--subtext0);
+  display: grid; place-items: center;
+  font-size: 11px;
+  padding: 0;
+}
+.cal-nav button:hover { color: var(--text); background: var(--surface1); }
+.cal-nav button:focus-visible { outline: 2px solid var(--blue); }
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+}
+.cal-dow {
+  text-align: center;
+  font-size: 9.5px; font-weight: 700;
+  letter-spacing: .06em;
+  color: var(--overlay0);
+  text-transform: uppercase;
+  padding-bottom: 3px;
+}
+.day {
+  aspect-ratio: 1;
+  border-radius: 7px;
+  display: grid; place-items: center;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  color: var(--subtext1);
+  background: var(--surface0);
+  border: 1.5px solid transparent;
+  cursor: default;
+}
+.day.dim { background: transparent; color: var(--overlay0); opacity: .45; }
+.day.h1 { background: color-mix(in srgb, var(--green) 22%, var(--surface0)); }
+.day.h2 { background: color-mix(in srgb, var(--green) 45%, var(--surface0)); }
+.day.h3 { background: color-mix(in srgb, var(--green) 70%, var(--surface0)); color: var(--crust); font-weight: 650; }
+.day.today { border-color: var(--blue); color: var(--text); font-weight: 700; }
+.cal-legend {
+  display: flex; align-items: center; gap: 5px;
+  justify-content: flex-end;
+  font-size: 9.5px; color: var(--overlay0);
+  padding: 8px 4px 0;
+}
+.cal-legend .sw { width: 9px; height: 9px; border-radius: 3px; background: var(--surface0); }
+.cal-legend .sw.s1 { background: color-mix(in srgb, var(--green) 22%, var(--surface0)); }
+.cal-legend .sw.s2 { background: color-mix(in srgb, var(--green) 45%, var(--surface0)); }
+.cal-legend .sw.s3 { background: color-mix(in srgb, var(--green) 70%, var(--surface0)); }
+
+footer.pop-foot {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 7px 14px;
+  border-top: 1px solid var(--hairline);
+  background: color-mix(in srgb, var(--mantle) 80%, transparent);
+  font-size: 10.5px;
+  color: var(--overlay0);
+  font-variant-numeric: tabular-nums;
+}
+footer.pop-foot .dot-live {
+  display: inline-flex; align-items: center; gap: 5px;
+}
+footer.pop-foot .dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--green);
+}
+
+/* ---------- Mockup grid & annotations ---------- */
+.mockgrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 28px;
+  align-items: start;
+}
+.figure { margin: 0; }
+.figcap {
+  font-size: 12.5px; color: var(--subtext0);
+  margin-top: 12px;
+  padding: 0 4px;
+}
+.figcap b { color: var(--text); font-weight: 650; }
+
+/* ---------- Tokens section ---------- */
+.swatches {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+  gap: 10px;
+}
+.swatch {
+  border-radius: 10px;
+  border: 1px solid var(--hairline);
+  overflow: hidden;
+  background: var(--mantle);
+}
+.swatch .chip { height: 44px; }
+.swatch .lbl { padding: 7px 10px 9px; }
+.swatch .name { font-size: 11.5px; font-weight: 650; display: block; }
+.swatch .hex {
+  font-family: "SF Mono", ui-monospace, "JetBrains Mono", Menlo, monospace;
+  font-size: 10.5px; color: var(--subtext0);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Plan tables ---------- */
+.tblwrap { overflow-x: auto; border: 1px solid var(--hairline); border-radius: 12px; }
+table {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 640px;
+  font-size: 13.5px;
+}
+th, td { text-align: left; padding: 10px 14px; vertical-align: top; }
+thead th {
+  font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--overlay1);
+  background: var(--mantle);
+  border-bottom: 1px solid var(--hairline);
+}
+tbody tr + tr td { border-top: 1px solid var(--hairline); }
+td code, li code, .sec-note code {
+  font-family: "SF Mono", ui-monospace, "JetBrains Mono", Menlo, monospace;
+  font-size: 12px;
+  background: var(--surface0);
+  padding: 1.5px 5px;
+  border-radius: 5px;
+  white-space: nowrap;
+}
+td .args { color: var(--subtext0); }
+
+/* Milestones */
+.milestones { display: grid; gap: 0; border: 1px solid var(--hairline); border-radius: 12px; overflow: hidden; }
+.ms {
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  background: var(--mantle);
+}
+.ms + .ms { border-top: 1px solid var(--hairline); }
+.ms .tag {
+  display: grid; place-items: center;
+  font-family: "SF Mono", ui-monospace, Menlo, monospace;
+  font-size: 12px; font-weight: 700;
+  color: var(--lavender);
+  border-right: 1px solid var(--hairline);
+  background: color-mix(in srgb, var(--crust) 60%, var(--mantle));
+}
+.ms .body { padding: 12px 16px; }
+.ms .body b { font-weight: 650; }
+.ms .body .acc { color: var(--subtext0); font-size: 12.5px; display: block; margin-top: 2px; }
+
+.notes { padding: 0; margin: 0 0 16px; color: var(--subtext1); font-size: 14px; }
+.notes li { margin: 6px 0; }
+.notes b { color: var(--text); font-weight: 650; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="page">
+  <p class="eyebrow">Design mockup &amp; plan</p>
+  <h1>TickTick Menu Bar</h1>
+  <p class="lede">A native macOS menu-bar app that reads and writes through the local <code>ticktick</code> CLI — no embedded browser, no separate API layer. Catppuccin Mocha by default, Latte as a light variant.</p>
+</header>
+
+<section>
+  <h2>1 · The popover</h2>
+  <p class="sec-note">Two tabs in one 356&nbsp;px popover, anchored under the menubar icon. Click around — the segmented control, checkboxes, and habit rings are live. Sample data includes your real overdue task.</p>
+
+  <div class="mockgrid">
+    <figure class="figure">
+      <div class="screen mocha">
+        <div class="menubar" role="presentation">
+          <span class="item"></span>
+          <span class="item active">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true" style="vertical-align:-2px;margin-right:5px">
+              <circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.6"/>
+              <path d="M5 8.2 7.2 10.4 11 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>3
+          </span>
+          <span class="spacer"></span>
+          <span class="item">Battery</span>
+          <span class="item">Wi-Fi</span>
+          <span class="item">Spotlight</span>
+          <span class="item">Mon 31 Aug 09:41</span>
+        </div>
+
+        <div class="pop-col">
+          <div class="popover" id="pop1">
+            <div class="pop-head">
+              <span class="pop-title" id="pop-title">Today · Mon, Aug 31</span>
+              <span class="pop-count" id="pop-count">3 open</span>
+            </div>
+
+            <div class="seg" role="tablist" aria-label="Popover views">
+              <button role="tab" aria-selected="true" data-tab="tasks">Tasks</button>
+              <button role="tab" aria-selected="false" data-tab="habits">Habits</button>
+            </div>
+
+            <!-- Tasks pane -->
+            <div class="pane" data-pane="tasks">
+              <div class="group-label">Overdue</div>
+
+              <div class="task" tabindex="0">
+                <button class="chk" aria-label="Complete Teletalk taka expires">
+                  <svg viewBox="0 0 16 16" fill="none"><path d="M3.5 8.5 6.5 11.5 12.5 4.5" stroke="#11111b" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <div class="body">
+                  <div class="title">Teletalk taka expires</div>
+                  <div class="meta"><span class="when overdue">5 days ago · Aug 26</span><span class="proj">personal</span></div>
+                </div>
+                <span class="prio none"></span>
+                <button class="del" aria-label="Delete task">
+                  <svg viewBox="0 0 16 16" fill="none"><path d="M3 4.5h10M6.5 4.5V3h3v1.5M4.5 4.5l.6 8h5.8l.6-8M6.8 7v3.5M9.2 7v3.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+                </button>
+              </div>
+
+              <div class="group-label">Today</div>
+
+              <div class="task done" tabindex="0">
+                <button class="chk" aria-label="Uncomplete Send August invoice">
+                  <svg viewBox="0 0 16 16" fill="none"><path d="M3.5 8.5 6.5 11.5 12.5 4.5" stroke="#11111b" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <div class="body">
+                  <div class="title">Send August invoice</div>
+                  <div class="meta"><span class="when">09:00</span><span class="proj">work</span></div>
+                </div>
+                <span class="prio hi"></span>
+                <button class="del" aria-label="Delete task">
+                  <svg viewBox="0 0 16 16" fill="none"><path d="M3 4.5h10M6.5 4.5V3h3v1.5M4.5 4.5l.6 8h5.8l.6-8M6.8 7v3.5M9.2 7v3.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+                </button>
+              </div>
+
+              <div class="task" tabindex="0">
+                <button class="chk" aria-label="Complete Review PR #482">
+                  <svg viewBox="0 0 16 16" fill="none"><path d="M3.5 8.5 6.5 11.5 12.5 4.5" stroke="#11111b" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <div class="body">
+                  <div class="title">Review PR #482</div>
+                  <div class="meta"><span class="when">14:00</span><span class="proj">work</span></div>
+                </div>
+                <span class="prio md"></span>
+                <button class="del" aria-label="Delete task">
+                  <svg viewBox="0 0 16 16" fill="none"><path d="M3 4.5h10M6.5 4.5V3h3v1.5M4.5 4.5l.6 8h5.8l.6-8M6.8 7v3.5M9.2 7v3.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+                </button>
+              </div>
+
+              <div class="task" tabindex="0">
+                <button class="chk" aria-label="Complete Evening walk">
+                  <svg viewBox="0 0 16 16" fill="none"><path d="M3.5 8.5 6.5 11.5 12.5 4.5" stroke="#11111b" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <div class="body">
+                  <div class="title">Evening walk</div>
+                  <div class="meta"><span class="when">18:30</span></div>
+                </div>
+                <span class="prio lo"></span>
+                <button class="del" aria-label="Delete task">
+                  <svg viewBox="0 0 16 16" fill="none"><path d="M3 4.5h10M6.5 4.5V3h3v1.5M4.5 4.5l.6 8h5.8l.6-8M6.8 7v3.5M9.2 7v3.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+                </button>
+              </div>
+
+              <div class="addfield">
+                <span class="plus">
+                  <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                </span>
+                <span class="type">Add a task for today…</span>
+                <span class="hint">⏎</span>
+              </div>
+            </div>
+
+            <!-- Habits pane -->
+            <div class="pane" data-pane="habits" hidden>
+              <div class="cal">
+                <div class="cal-head">
+                  <span class="cal-month">August 2026</span>
+                  <span class="cal-nav">
+                    <button aria-label="Previous month">‹</button>
+                    <button aria-label="Next month">›</button>
+                  </span>
+                </div>
+                <div class="cal-grid" id="calgrid">
+                  <span class="cal-dow">S</span><span class="cal-dow">M</span><span class="cal-dow">T</span><span class="cal-dow">W</span><span class="cal-dow">T</span><span class="cal-dow">F</span><span class="cal-dow">S</span>
+                </div>
+                <div class="cal-legend">less <span class="sw"></span><span class="sw s1"></span><span class="sw s2"></span><span class="sw s3"></span> more</div>
+              </div>
+
+              <div class="group-label">Today</div>
+
+              <div class="habit checked">
+                <button class="ring" aria-label="Check in Read 20 pages">
+                  <svg viewBox="0 0 16 16" fill="none"><path d="M3.5 8.5 6.5 11.5 12.5 4.5" stroke="#11111b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <div class="h-body">
+                  <div class="h-name">Read 20 pages</div>
+                  <div class="h-sub">daily · done 09:12</div>
+                </div>
+                <span class="streak">
+                  <svg viewBox="0 0 16 16" fill="currentColor"><path d="M9 1.5 3.5 9H7l-.8 5.5L12.5 7H8.8L9 1.5z"/></svg>12
+                </span>
+              </div>
+
+              <div class="habit">
+                <button class="ring" aria-label="Check in Workout">
+                  <svg viewBox="0 0 16 16" fill="none"><path d="M3.5 8.5 6.5 11.5 12.5 4.5" stroke="#11111b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <div class="h-body">
+                  <div class="h-name">Workout</div>
+                  <div class="h-sub">5× / week · 3 of 5 this week</div>
+                </div>
+                <span class="streak">
+                  <svg viewBox="0 0 16 16" fill="currentColor"><path d="M9 1.5 3.5 9H7l-.8 5.5L12.5 7H8.8L9 1.5z"/></svg>5
+                </span>
+              </div>
+
+              <div class="habit">
+                <button class="ring" aria-label="Check in Journal">
+                  <svg viewBox="0 0 16 16" fill="none"><path d="M3.5 8.5 6.5 11.5 12.5 4.5" stroke="#11111b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <div class="h-body">
+                  <div class="h-name">Journal</div>
+                  <div class="h-sub">daily</div>
+                </div>
+                <span class="streak">
+                  <svg viewBox="0 0 16 16" fill="currentColor"><path d="M9 1.5 3.5 9H7l-.8 5.5L12.5 7H8.8L9 1.5z"/></svg>0
+                </span>
+              </div>
+            </div>
+
+            <footer class="pop-foot">
+              <span class="dot-live"><span class="dot"></span>synced via ticktick cli · 09:41</span>
+              <span>⌘R refresh</span>
+            </footer>
+          </div>
+        </div>
+      </div>
+      <figcaption class="figcap"><b>Tasks &amp; Habits tabs, one popover.</b> Overdue floats above Today; priority reads as a single dot; delete appears on row hover. The menubar badge shows open count (3).</figcaption>
+    </figure>
+
+    <figure class="figure">
+      <div class="screen latte">
+        <div class="menubar" role="presentation">
+          <span class="item"></span>
+          <span class="item active">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true" style="vertical-align:-2px;margin-right:5px">
+              <circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.6"/>
+              <path d="M5 8.2 7.2 10.4 11 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>3
+          </span>
+          <span class="spacer"></span>
+          <span class="item">Battery</span>
+          <span class="item">Wi-Fi</span>
+          <span class="item">Mon 31 Aug 09:41</span>
+        </div>
+        <div class="pop-col">
+          <div class="popover">
+            <div class="pop-head">
+              <span class="pop-title">Today · Mon, Aug 31</span>
+              <span class="pop-count">3 open</span>
+            </div>
+            <div class="seg" role="tablist" aria-label="Popover views">
+              <button role="tab" aria-selected="true">Tasks</button>
+              <button role="tab" aria-selected="false">Habits</button>
+            </div>
+            <div class="group-label">Overdue</div>
+            <div class="task">
+              <button class="chk" aria-label="Complete Teletalk taka expires">
+                <svg viewBox="0 0 16 16" fill="none"><path d="M3.5 8.5 6.5 11.5 12.5 4.5" stroke="#dce0e8" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <div class="body">
+                <div class="title">Teletalk taka expires</div>
+                <div class="meta"><span class="when overdue">5 days ago · Aug 26</span><span class="proj">personal</span></div>
+              </div>
+              <span class="prio none"></span>
+            </div>
+            <div class="group-label">Today</div>
+            <div class="task">
+              <button class="chk" aria-label="Complete Review PR #482">
+                <svg viewBox="0 0 16 16" fill="none"><path d="M3.5 8.5 6.5 11.5 12.5 4.5" stroke="#dce0e8" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <div class="body">
+                <div class="title">Review PR #482</div>
+                <div class="meta"><span class="when">14:00</span><span class="proj">work</span></div>
+              </div>
+              <span class="prio md"></span>
+            </div>
+            <div class="task">
+              <button class="chk" aria-label="Complete Evening walk">
+                <svg viewBox="0 0 16 16" fill="none"><path d="M3.5 8.5 6.5 11.5 12.5 4.5" stroke="#dce0e8" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <div class="body">
+                <div class="title">Evening walk</div>
+                <div class="meta"><span class="when">18:30</span></div>
+              </div>
+              <span class="prio lo"></span>
+            </div>
+            <div class="addfield">
+              <span class="plus">
+                <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              </span>
+              <span class="type">Add a task for today…</span>
+              <span class="hint">⏎</span>
+            </div>
+            <footer class="pop-foot">
+              <span class="dot-live"><span class="dot"></span>synced via ticktick cli · 09:41</span>
+              <span>⌘R refresh</span>
+            </footer>
+          </div>
+        </div>
+      </div>
+      <figcaption class="figcap"><b>Latte variant.</b> Same layout, palette swapped — follows the system appearance when the user hasn't pinned dark.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section>
+  <h2>2 · Palette</h2>
+  <p class="sec-note">Catppuccin verbatim — no custom colors. Blue is the single interactive accent; green means done/checked; red means overdue/delete; mauve is brand only. Priority dots reuse red/yellow/blue.</p>
+  <div class="swatches mocha">
+    <div class="swatch"><div class="chip" style="background:#1e1e2e"></div><div class="lbl"><span class="name">base</span><span class="hex">#1e1e2e</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#181825"></div><div class="lbl"><span class="name">mantle</span><span class="hex">#181825</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#313244"></div><div class="lbl"><span class="name">surface0</span><span class="hex">#313244</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#45475a"></div><div class="lbl"><span class="name">surface1</span><span class="hex">#45475a</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#cdd6f4"></div><div class="lbl"><span class="name">text</span><span class="hex">#cdd6f4</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#a6adc8"></div><div class="lbl"><span class="name">subtext0</span><span class="hex">#a6adc8</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#89b4fa"></div><div class="lbl"><span class="name">blue · accent</span><span class="hex">#89b4fa</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#a6e3a1"></div><div class="lbl"><span class="name">green · done</span><span class="hex">#a6e3a1</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#f38ba8"></div><div class="lbl"><span class="name">red · overdue</span><span class="hex">#f38ba8</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#f9e2af"></div><div class="lbl"><span class="name">yellow · prio</span><span class="hex">#f9e2af</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#cba6f7"></div><div class="lbl"><span class="name">mauve · brand</span><span class="hex">#cba6f7</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#fab387"></div><div class="lbl"><span class="name">peach · streak</span><span class="hex">#fab387</span></div></div>
+  </div>
+</section>
+
+<section>
+  <h2>3 · Build plan</h2>
+  <p class="sec-note">SwiftUI <code>MenuBarExtra</code> (macOS 13+). The app is a thin, pretty shell; every read and write goes through the CLI as a child process, JSON in/out via <code>JSONDecoder</code>. No tokens in the app — auth stays in <code>ticktick auth</code>.</p>
+
+  <ul class="notes">
+    <li><b>Why not Electron/Tauri:</b> a checklist doesn't need a browser engine. Native menubar, ~5 MB, launches in one frame.</li>
+    <li><b>Refresh:</b> poll <code>filter</code> every 5 min + on popover open + ⌘R; optimistic UI for complete/check-in, reconcile on response.</li>
+    <li><b>State:</b> two structs — <code>TaskRow</code>, <code>HabitRow</code> — decoded straight from CLI JSON; a small <code>TickTickCLIRunner</code> wrapping <code>Process</code>.</li>
+  </ul>
+
+  <div class="tblwrap">
+    <table>
+      <thead>
+        <tr><th>Feature</th><th>CLI call</th><th>Notes</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Today + overdue list</td><td><code>ticktick task filter</code> <span class="args">--start-date --end-date --json</span></td><td>Query a wide window (e.g. −30 d → today), bucket overdue vs today client-side</td></tr>
+        <tr><td>Add task</td><td><code>ticktick task create</code> <span class="args">--title … --date today</span></td><td>Enter commits; ⌘Enter keeps field open for a chain of adds</td></tr>
+        <tr><td>Complete / uncomplete</td><td><code>ticktick task complete</code> <span class="args">&lt;projectId&gt; &lt;taskId&gt;</span></td><td>Optimistic check; revert row on error toast</td></tr>
+        <tr><td>Delete</td><td><code>ticktick task delete</code> <span class="args">&lt;projectId&gt; &lt;taskId&gt;</span></td><td>Confirm popover for delete; no undo in v1</td></tr>
+        <tr><td>Habit list + streaks</td><td><code>ticktick habit list</code> <span class="args">--json</span></td><td>Streak computed from check-ins range</td></tr>
+        <tr><td>Check / uncheck habit</td><td><code>ticktick habit checkin</code> <span class="args">&lt;habitId&gt; --stamp YYYYMMDD</span></td><td>Verify uncheck semantics against the CLI before wiring (see risks)</td></tr>
+        <tr><td>Calendar heatmap</td><td><code>ticktick habit checkins</code> <span class="args">--from --to --json</span></td><td>One call per visible month; intensity = habits done ÷ habits that day</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="milestones" style="margin-top:20px">
+    <div class="ms"><div class="tag">M1</div><div class="body"><b>Scaffold + auth gate</b><span class="acc">MenuBarExtra renders empty popover; on open, runs <code>ticktick task filter --json</code>; auth error state with "Open ticktick auth" button</span></div></div>
+    <div class="ms"><div class="tag">M2</div><div class="body"><b>Read-only Today</b><span class="acc">Overdue/Today sections, priority dots, menubar badge count, 5-min poll</span></div></div>
+    <div class="ms"><div class="tag">M3</div><div class="body"><b>Writes</b><span class="acc">Complete, delete (with confirm), add-field with Enter to create for today; optimistic updates</span></div></div>
+    <div class="ms"><div class="tag">M4</div><div class="body"><b>Habits tab</b><span class="acc">Habit rows with check rings + streaks; month heatmap calendar, ‹ › month nav, today ring</span></div></div>
+    <div class="ms"><div class="tag">M5</div><div class="body"><b>Polish</b><span class="acc">Catppuccin Mocha/Latte following system appearance, error toasts, ⌘R, launch-at-login toggle</span></div></div>
+  </div>
+
+  <ul class="notes" style="margin-top:20px">
+    <li><b>Risk — <code>search</code> is down:</b> the CLI's <code>task search</code> currently returns API 500; <code>task filter</code> works and is what the plan uses throughout.</li>
+    <li><b>Risk — habit uncheck:</b> confirm whether clearing a check-in is a checkin-with-zero or a separate call before M4.</li>
+    <li><b>Latency:</b> each CLI spawn is a fresh process (~100–300 ms) — fine for a popover, hidden behind optimistic UI.</li>
+  </ul>
+</section>
+
+</div>
+
+<script>
+// Tabs
+const pop = document.getElementById('pop1');
+const tabs = pop.querySelectorAll('.seg button');
+const panes = pop.querySelectorAll('.pane');
+const count = document.getElementById('pop-count');
+const title = document.getElementById('pop-title');
+tabs.forEach(t => t.addEventListener('click', () => {
+  tabs.forEach(x => x.setAttribute('aria-selected', String(x === t)));
+  panes.forEach(p => p.hidden = p.dataset.pane !== t.dataset.tab);
+  if (t.dataset.tab === 'tasks') { title.textContent = 'Today · Mon, Aug 31'; }
+  else { title.textContent = 'Habits'; count.textContent = '2 / 3 today'; }
+}));
+
+// Task checkboxes (toggle, don't mutate the count — mockup)
+pop.querySelectorAll('.task .chk').forEach(c => c.addEventListener('click', () => {
+  c.closest('.task').classList.toggle('done');
+}));
+// Habit rings
+pop.querySelectorAll('.habit .ring').forEach(r => r.addEventListener('click', () => {
+  const h = r.closest('.habit');
+  h.classList.toggle('checked');
+  const st = h.querySelector('.streak');
+  const n = parseInt(st.textContent, 10) || 0;
+  st.innerHTML = st.querySelector('svg').outerHTML + (h.classList.contains('checked') ? n + 1 : Math.max(0, n - 1));
+}));
+
+// Calendar: August 2026 (Aug 1 = Saturday), 31 days, mock check-in intensities
+const heats = {1:1,2:2,3:1,4:0,5:2,6:3,7:1,8:0,9:2,10:1,11:3,12:2,13:1,14:0,
+  15:2,16:3,17:2,18:1,19:0,20:1,21:2,22:3,23:1,24:2,25:0,26:1,27:2,28:3,29:2,30:1,31:2};
+const grid = document.getElementById('calgrid');
+for (let i = 0; i < 6; i++) grid.insertAdjacentHTML('beforeend', '<span class="day dim"></span>');
+for (let d = 1; d <= 31; d++) {
+  const h = heats[d];
+  grid.insertAdjacentHTML('beforeend',
+    `<span class="day${h ? ' h' + h : ''}${d === 31 ? ' today' : ''}" title="${d} Aug · ${h} habit${h === 1 ? '' : 's'} done">${d}</span>`);
+}
+</script>
+</body>
+</html>
