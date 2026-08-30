@@ -1,0 +1,24 @@
+{
+    "configurations": [
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:TickTickBar}",
+            "name": "Debug TickTickBar",
+            "target": "TickTickBar",
+            "configuration": "debug",
+            "preLaunchTask": "swift: Build Debug TickTickBar"
+        },
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:TickTickBar}",
+            "name": "Release TickTickBar",
+            "target": "TickTickBar",
+            "configuration": "release",
+            "preLaunchTask": "swift: Build Release TickTickBar"
+        }
+    ]
+}
