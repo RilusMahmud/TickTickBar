@@ -23,3 +23,4 @@
 ## Deviations
 
 - `make-app.sh` referenced `../ticktick.svg`, which would remove the existing app bundle and then fail during packaging. Corrected it to the repository-local `ticktick.svg` before rebuilding.
+- Runtime captures exposed calendar cells collapsing to text height, duplicate weekday/blank-cell IDs, a nested lazy stack mismeasuring the partial sixth week, and an invalid `DateFormatter` pattern treating `Today` as format symbols. Set the mockup cell height, use stable grid IDs and eager outer layout, and format the date before adding the title prefix.

@@ -122,8 +122,8 @@ struct TasksView: View {
 
     static var headline: String {
         let f = DateFormatter()
-        f.dateFormat = "Today · EEE, MMM d"
-        return f.string(from: Date())
+        f.dateFormat = "EEE, MMM d"
+        return "Today · \(f.string(from: Date()))"
     }
 }
 

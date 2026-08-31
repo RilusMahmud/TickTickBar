@@ -5,7 +5,7 @@ struct HabitsView: View {
 
     var body: some View {
         ScrollView {
-            LazyVStack(spacing: 0) {
+            VStack(spacing: 0) {
                 HabitCalendarView(counts: store.checkinCounts, totalHabits: max(store.habits.count, 1))
                     .padding(.horizontal, 14)
                     .padding(.top, 4)
@@ -62,16 +62,17 @@ struct HabitCalendarView: View {
             .padding(.horizontal, 4)
             .padding(.bottom, 8)
 
+            let cells = Self.cells(for: displayedMonth)
             LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 3), count: 7), spacing: 3) {
-                ForEach(Self.dowLabels, id: \.self) { d in
-                    Text(d)
+                ForEach(Self.dowLabels.indices, id: \.self) { index in
+                    Text(Self.dowLabels[index])
                         .font(.system(size: 9.5, weight: .bold))
                         .foregroundColor(Theme.overlay0)
                         .frame(maxWidth: .infinity)
                         .padding(.bottom, 3)
                 }
-                ForEach(Self.cells(for: displayedMonth), id: \.self) { cell in
-                    cellView(cell)
+                ForEach(cells.indices, id: \.self) { index in
+                    cellView(cells[index])
                 }
             }
 
@@ -115,14 +116,14 @@ struct HabitCalendarView: View {
                 .monospacedDigit()
                 .foregroundColor(level >= 3 ? Theme.crust : (isToday ? Theme.text : Theme.subtext0))
                 .frame(maxWidth: .infinity)
-                .aspectRatio(1, contentMode: .fit)
+                .frame(height: 44)
                 .background(RoundedRectangle(cornerRadius: 7).fill(isFuture ? Theme.surface0.opacity(0.5) : Self.heatColor(level)))
                 .overlay(RoundedRectangle(cornerRadius: 7).strokeBorder(isToday ? Theme.blue : .clear, lineWidth: 1.5))
                 .accessibilityLabel("\(cal.component(.day, from: day)), \(level == 0 ? "no check-ins" : "\(level) level check-ins")")
         } else {
             Color.clear
-                .aspectRatio(1, contentMode: .fit)
                 .frame(maxWidth: .infinity)
+                .frame(height: 44)
         }
     }
 
