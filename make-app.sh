@@ -10,7 +10,7 @@ APP=TickTickBar.app
 rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 cp "$BIN" "$APP/Contents/MacOS/TickTickBar"
-cp ../ticktick.svg "$APP/Contents/Resources/"
+cp ticktick.svg "$APP/Contents/Resources/"
 cp Resources/ticktick-icon.png "$APP/Contents/Resources/"
 
 cat > "$APP/Contents/Info.plist" <<'PLIST'
