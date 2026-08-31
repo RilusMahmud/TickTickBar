@@ -7,22 +7,25 @@ struct TasksView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            header
+            ScrollView {
+                let buckets = Self.bucket(store.tasks)
 
-            let buckets = Self.bucket(store.tasks)
-
-            if buckets.overdue.isEmpty && buckets.today.isEmpty {
-                emptyState
-            } else {
-                if !buckets.overdue.isEmpty {
-                    groupLabel("Overdue")
-                    ForEach(buckets.overdue) { TaskListRow(task: $0) }
-                }
-                if !buckets.today.isEmpty {
-                    groupLabel("Today")
-                    ForEach(buckets.today) { TaskListRow(task: $0) }
+                LazyVStack(spacing: 0) {
+                    if buckets.overdue.isEmpty && buckets.today.isEmpty {
+                        emptyState
+                    } else {
+                        if !buckets.overdue.isEmpty {
+                            groupLabel("Overdue")
+                            ForEach(buckets.overdue) { TaskListRow(task: $0) }
+                        }
+                        if !buckets.today.isEmpty {
+                            groupLabel("Today")
+                            ForEach(buckets.today) { TaskListRow(task: $0) }
+                        }
+                    }
                 }
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
 
             addField
         }
@@ -30,24 +33,6 @@ struct TasksView: View {
     }
 
     // MARK: Sections
-
-    private var header: some View {
-        HStack(alignment: .firstTextBaseline) {
-            Text(Self.headline)
-                .font(.system(size: 14.5, weight: .bold))
-                .foregroundColor(Theme.text)
-            Spacer()
-            Text("\(store.openCount) open")
-                .font(.system(size: 11.5, weight: .semibold))
-                .monospacedDigit()
-                .foregroundColor(Theme.subtext0)
-                .padding(.horizontal, 8)
-                .padding(.vertical, 2)
-                .background(Theme.surface0, in: Capsule())
-        }
-        .padding(.horizontal, 16)
-        .padding(.bottom, 10)
-    }
 
     private func groupLabel(_ title: String) -> some View {
         Text(title.uppercased())

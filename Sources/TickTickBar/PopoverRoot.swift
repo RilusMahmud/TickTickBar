@@ -8,9 +8,10 @@ struct PopoverRoot: View {
 
     var body: some View {
         VStack(spacing: 0) {
+            header
+
             segControl
                 .padding(.horizontal, 16)
-                .padding(.top, 12)
                 .padding(.bottom, 10)
 
             // Hidden shortcuts: ⌘R refresh, ⌘1/⌘2 tabs
@@ -28,22 +29,38 @@ struct PopoverRoot: View {
                 errorBanner(err, authRelated: store.isAuthError)
             }
 
-            ScrollView {
-                Group {
-                    switch selectedTab {
-                    case .tasks: TasksView()
-                    case .habits: HabitsView()
-                    }
+            Group {
+                switch selectedTab {
+                case .tasks: TasksView()
+                case .habits: HabitsView()
                 }
-                .frame(maxWidth: .infinity)
             }
-            .frame(maxHeight: .infinity)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
 
             footer
         }
-        .frame(minWidth: 356, idealWidth: 356, minHeight: 480, idealHeight: 520, maxHeight: 560)
+        .frame(width: 356, height: selectedTab == .tasks ? 452 : 696)
         .background(Theme.base)
         .onAppear { Task { await store.refresh() } }
+    }
+
+    private var header: some View {
+        HStack(alignment: .firstTextBaseline) {
+            Text(selectedTab == .tasks ? TasksView.headline : "Habits")
+                .font(.system(size: 14.5, weight: .bold))
+                .foregroundColor(Theme.text)
+            Spacer()
+            Text(selectedTab == .tasks ? "\(store.openCount) open" : "\(store.habitDoneToday.count) / \(store.habits.count) today")
+                .font(.system(size: 11.5, weight: .semibold))
+                .monospacedDigit()
+                .foregroundColor(Theme.subtext0)
+                .padding(.horizontal, 8)
+                .padding(.vertical, 2)
+                .background(Theme.surface0, in: Capsule())
+        }
+        .padding(.horizontal, 16)
+        .padding(.top, 13)
+        .padding(.bottom, 10)
     }
 
     private var segControl: some View {

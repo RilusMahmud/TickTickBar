@@ -4,33 +4,37 @@ struct HabitsView: View {
     @EnvironmentObject var store: AppStore
 
     var body: some View {
-        VStack(spacing: 0) {
-            HabitCalendarView(counts: store.checkinCounts, totalHabits: max(store.habits.count, 1))
-                .padding(.horizontal, 14)
-                .padding(.bottom, 4)
+        ScrollView {
+            LazyVStack(spacing: 0) {
+                HabitCalendarView(counts: store.checkinCounts, totalHabits: max(store.habits.count, 1))
+                    .padding(.horizontal, 14)
+                    .padding(.top, 4)
+                    .padding(.bottom, 12)
 
-            Text("TODAY")
-                .font(.system(size: 10.5, weight: .bold))
-                .tracking(1)
-                .foregroundColor(Theme.overlay0)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, 16)
-                .padding(.top, 8)
-                .padding(.bottom, 4)
-
-            if store.habits.isEmpty {
-                Text("No habits")
-                    .font(.system(size: 12.5))
+                Text("TODAY")
+                    .font(.system(size: 10.5, weight: .bold))
+                    .tracking(1)
                     .foregroundColor(Theme.overlay0)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 18)
-            } else {
-                ForEach(store.habits) { habit in
-                    HabitRowView(habit: habit)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, 16)
+                    .padding(.top, 8)
+                    .padding(.bottom, 4)
+
+                if store.habits.isEmpty {
+                    Text("No habits")
+                        .font(.system(size: 12.5))
+                        .foregroundColor(Theme.overlay0)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 18)
+                } else {
+                    ForEach(store.habits) { habit in
+                        HabitRowView(habit: habit)
+                    }
                 }
             }
+            .padding(.bottom, 8)
         }
-        .padding(.bottom, 8)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 
@@ -55,6 +59,7 @@ struct HabitCalendarView: View {
                     navButton("chevron.right") { displayedMonth = cal.addMonths(1, to: displayedMonth) }
                 }
             }
+            .padding(.horizontal, 4)
             .padding(.bottom, 8)
 
             LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 3), count: 7), spacing: 3) {
@@ -63,6 +68,7 @@ struct HabitCalendarView: View {
                         .font(.system(size: 9.5, weight: .bold))
                         .foregroundColor(Theme.overlay0)
                         .frame(maxWidth: .infinity)
+                        .padding(.bottom, 3)
                 }
                 ForEach(Self.cells(for: displayedMonth), id: \.self) { cell in
                     cellView(cell)
@@ -81,6 +87,7 @@ struct HabitCalendarView: View {
             .font(.system(size: 9.5))
             .foregroundColor(Theme.overlay0)
             .frame(maxWidth: .infinity, alignment: .trailing)
+            .padding(.horizontal, 4)
             .padding(.top, 8)
         }
     }
@@ -179,6 +186,13 @@ struct HabitRowView: View {
 
     private var checked: Bool { store.habitDoneToday.contains(habit.id) }
 
+    private var subtitle: String {
+        if checked { return "daily · done" }
+        if habit.goal == 1, habit.unit.caseInsensitiveCompare("count") == .orderedSame { return "daily" }
+        let goal = habit.goal.rounded() == habit.goal ? String(Int(habit.goal)) : String(format: "%g", habit.goal)
+        return "daily · goal \(goal) \(habit.unit.lowercased())"
+    }
+
     var body: some View {
         HStack(spacing: 10) {
             Button {
@@ -200,11 +214,11 @@ struct HabitRowView: View {
 
             VStack(alignment: .leading, spacing: 1) {
                 Text(habit.name)
-                    .font(.system(size: 13, weight: .semibold))
+                    .font(.system(size: 13, weight: .medium))
                     .foregroundColor(checked ? Theme.overlay0 : Theme.text)
                     .lineLimit(1)
                     .truncationMode(.tail)
-                Text(checked ? "done" : "daily · goal \(Int(habit.goal)) \(habit.unit.lowercased())")
+                Text(subtitle)
                     .font(.system(size: 11))
                     .foregroundColor(Theme.subtext0)
             }
